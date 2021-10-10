@@ -10,6 +10,21 @@ import (
 	"github.com/centrifugal/centrifuge"
 )
 
+func main() {
+	node, handler, err := websocket.New(config)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(node) // save node object somewhere
+
+	http.Handle("/websocket", handler)
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		panic(err)
+	}
+}
+
 var config = websocket.Config{
 	Engine: websocket.RedisEngine{
 		RedisBrokerConfig:          centrifuge.RedisBrokerConfig{},
@@ -44,21 +59,6 @@ var config = websocket.Config{
 		},
 		UseWriteBufferPool: true,
 	},
-}
-
-func main() {
-	node, handler, err := websocket.New(config)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(node) // save node object somewhere
-
-	http.Handle("/websocket", handler)
-
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		panic(err)
-	}
 }
 
 // client Handler
